@@ -61,7 +61,7 @@ func Find(key string) ([]Environment, error) {
 	key = sanitizeKey(key)
 	var env []Environment
 
-	if err := conn.Where("key LIKE ?", key).Find(&env).Error; err != nil {
+	if err := conn.Where("key LIKE ?", "%"+key+"%").Order("key ASC").Find(&env).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("no records found matching the key")
 		}
@@ -108,7 +108,7 @@ func Environ() ([]Environment, error) {
 
 	var env []Environment
 
-	if err := conn.Find(&env).Error; err != nil {
+	if err := conn.Order("key ASC").Find(&env).Error; err != nil {
 		return nil, err
 	}
 
