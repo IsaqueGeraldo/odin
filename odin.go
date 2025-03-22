@@ -11,6 +11,7 @@ import (
 	"golang.org/x/text/unicode/norm"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 type Envoriment struct {
@@ -28,7 +29,9 @@ func Bootstrap(source ...string) {
 		dsn = source[0]
 	}
 
-	conn, err = gorm.Open(sqlite.Open(dsn), &gorm.Config{})
+	conn, err = gorm.Open(sqlite.Open(dsn), &gorm.Config{
+		Logger: logger.Discard,
+	})
 	if err != nil {
 		log.Printf("failed to connect to database: %v", err)
 		return
