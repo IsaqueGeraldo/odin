@@ -20,10 +20,15 @@ type Envoriment struct {
 
 var conn *gorm.DB
 
-func Bootstrap() {
+func Bootstrap(source ...string) {
 	var err error
 
-	conn, err = gorm.Open(sqlite.Open("odin.db"), &gorm.Config{})
+	dsn := "odin.db"
+	if len(source) > 0 {
+		dsn = source[0]
+	}
+
+	conn, err = gorm.Open(sqlite.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Printf("failed to connect to database: %v", err)
 		return
