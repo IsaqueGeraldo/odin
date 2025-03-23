@@ -21,12 +21,36 @@ type Envoriment struct {
 
 var conn *gorm.DB
 
+func isValidFileName(fileName string) bool {
+	if fileName == "" {
+		return false
+	}
+
+	invalidChars := `[\\/:*?"<>|]`
+	matched, _ := regexp.MatchString(invalidChars, fileName)
+	if matched {
+		return false
+	}
+
+	if len(fileName) > 255 {
+		return false
+	}
+
+	if strings.HasSuffix(fileName, " ") || strings.HasSuffix(fileName, ".") {
+		return false
+	}
+
+	return true
+}
+
 func Bootstrap(source ...string) {
 	var err error
 
 	dsn := "odin.db"
 	if len(source) > 0 {
-		dsn = source[0]
+		if isValidFileName(source[0]) {
+			dsn = source[0]
+		}
 	}
 
 	conn, err = gorm.Open(sqlite.Open(dsn), &gorm.Config{
