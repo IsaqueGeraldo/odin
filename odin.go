@@ -118,7 +118,7 @@ func Unsetenv(key string) error {
 }
 
 func Clearenv() {
-	conn.Exec("DELETE FROM environments")
+	conn.Unscoped().Where("1 = 1").Delete(&Envoriment{})
 }
 
 func Environ() []string {
